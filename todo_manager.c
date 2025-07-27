@@ -104,9 +104,16 @@ void remove_task(ToDoList *list, int id) {
 
 // Function to toggle a task's completion status
 void toggle_task_status(ToDoList *list, int id) {
-    // TODO: Implement function to toggle the completion status of a task.
-    // - Find the task with the given ID.
-    // - Toggle its completion status.
+    for(int i = 0; i < list->task_count; i++) {
+        if(list->tasks[i].id == id) {
+            list->tasks[i].id = id;
+            if(id == 1) {
+                printf("The task is compleated\n");
+            } else if (id == 0) {
+                printf("The task is not compleate\n");
+            }
+        }
+    }
 }
 
 // Function to display all tasks
