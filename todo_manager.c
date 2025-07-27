@@ -87,10 +87,19 @@ int add_task(ToDoList *list) {
 
 // Function to remove a task by its ID
 void remove_task(ToDoList *list, int id) {
-    // TODO: Implement function to remove a task by its ID.
-    // - Find the task with the given ID.
-    // - Shift other tasks to fill the gap.
-    // - Decrement the task count.
+    for (int i = 0; i < list->task_count; ++i) {
+        if (list->tasks[i].id == id) {
+            // Task found, shift subsequent tasks left
+            for (int j = i; j < list->task_count - 1; ++j) {
+                list->tasks[j] = list->tasks[j + 1];
+            }
+            // Decrement the task count
+            list->task_count--;
+            printf("Task with ID %d removed.\n", id);
+            return;
+        }
+    }
+    printf("Task with ID %d not found.\n", id);  
 }
 
 // Function to toggle a task's completion status
