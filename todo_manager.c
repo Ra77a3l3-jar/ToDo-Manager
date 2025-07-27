@@ -18,7 +18,7 @@ typedef struct {
 /* ================ FUNCTION DECLARATIONS ================== */
 
 ToDoList* initialize_todo_list(int initial_capacity);
-void add_task(ToDoList *list, const char *title, int priority);
+int add_task(ToDoList *list);
 void remove_task(ToDoList *list, int id);
 void toggle_task_status(ToDoList *list, int id);
 void display_tasks(const ToDoList *list);
@@ -45,12 +45,44 @@ ToDoList* initialize_todo_list(int initial_capacity) {
 }
 
 // Function to add a new task
-void add_task(ToDoList *list, const char *title, int priority) {
-    // TODO: Implement function to add a task to the list.
-    // - Check if the list needs resizing.
-    // - Assign an ID to the new task.
-    // - Set the task's title, priority, and status.
-    // - Increment the task count.
+int add_task(ToDoList *list) {
+    if(list->task_count >= list->capacity) {
+        int new_capacity = 0;
+        printf("The array is full you need to add more space: ");
+        scanf("%d", &new_capacity);
+        new_capacity += list->capacity;
+
+        Task *newList = realloc(list->tasks, sizeof(Task) * new_capacity);
+        if(newList == NULL) {
+            printf("Memory allocation failed");
+            return 1;
+        }
+        list->tasks = newList;
+        list->capacity = new_capacity;
+    }
+
+    int id_temp = 0;
+    printf("Enter the task ID: ");
+    scanf("%d", &id_temp);
+    list->tasks[list->task_count].id = id_temp;
+
+    char title_temp[256];
+    printf("Enter the task's title: ");
+    scanf(" %255[^\n]", title_temp);
+    strcpy(list->tasks[list->task_count].title, title_temp);
+
+    int priority_temp = 0;
+    printf("Enter the task's priority: ");
+    scanf("%d", &priority_temp);
+    list->tasks[list->task_count].priority = priority_temp;
+
+    int status_temp = 0;
+    printf("Enter the task's status: ");
+    scanf("%d", &status_temp);
+    list->tasks[list->task_count].is_completed = status_temp;
+
+    list->task_count++;
+    return 0;
 }
 
 // Function to remove a task by its ID
