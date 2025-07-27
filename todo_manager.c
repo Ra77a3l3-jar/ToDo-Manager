@@ -18,7 +18,7 @@ typedef struct {
 /* ================ FUNCTION DECLARATIONS ================== */
 
 ToDoList* initialize_todo_list(int initial_capacity);
-int add_task(ToDoList *list);
+void add_task(ToDoList *list);
 void remove_task(ToDoList *list, int id);
 void toggle_task_status(ToDoList *list, int id);
 void display_tasks(const ToDoList *list);
@@ -44,48 +44,41 @@ ToDoList* initialize_todo_list(int initial_capacity) {
     return todoList;
 }
 
-// Function to add a new task
-int add_task(ToDoList *list) {
-    if(list->task_count >= list->capacity) {
-        int new_capacity = 0;
-        printf("The array is full you need to add more space: ");
-        scanf("%d", &new_capacity);
-        new_capacity += list->capacity;
+void add_task(ToDoList *list) {
+    printf("\n\n╔══════════════════════════════════════════════════════════╗\n");
+    printf("║                    ➕ ADD TASK ➕                          ║\n");
+    printf("╚══════════════════════════════════════════════════════════╝\n\n");
 
-        Task *newList = realloc(list->tasks, sizeof(Task) * new_capacity);
-        if(newList == NULL) {
-            printf("Memory allocation failed");
-            return 1;
-        }
-        list->tasks = newList;
-        list->capacity = new_capacity;
+    if (list->task_count >= list->capacity) {
+        printf("⚠️  Task list full! Please increase capacity.\n");
     }
 
-    int id_temp = 0;
-    printf("Enter the task ID: ");
+    int id_temp;
+    printf("📌 Enter the task ID: ");
     scanf("%d", &id_temp);
     list->tasks[list->task_count].id = id_temp;
 
     char title_temp[256];
-    printf("Enter the task's title: ");
+    printf("✏️  Enter the task's title: ");
     scanf(" %255[^\n]", title_temp);
     strcpy(list->tasks[list->task_count].title, title_temp);
 
-    int priority_temp = 0;
-    printf("Enter the task's priority (0 = LOW / 1 = HIGH): ");
+    int priority_temp;
+    printf("🔼 Enter the task's priority: ");
     scanf("%d", &priority_temp);
     list->tasks[list->task_count].priority = priority_temp;
 
-    int status_temp = 0;
-    printf("Enter the task's status (0 = not compl / 1 = compleated): ");
+    int status_temp;
+    printf("🎯 Enter the task's status (0 for not completed, 1 for completed): ");
     scanf("%d", &status_temp);
     list->tasks[list->task_count].is_completed = status_temp;
 
     list->task_count++;
-    return 0;
+    printf("\n🎉 ═══════════════════════════════════════════════════════\n");
+    printf("   🎉 TASK ADDED SUCCESSFULLY! 🎉\n");
+    printf("   ═══════════════════════════════════════════════════════\n");
 }
 
-// Function to remove a task by its ID
 void remove_task(ToDoList *list, int id) {
     for (int i = 0; i < list->task_count; ++i) {
         if (list->tasks[i].id == id) {
@@ -102,7 +95,6 @@ void remove_task(ToDoList *list, int id) {
     printf("Task with ID %d not found.\n", id);  
 }
 
-// Function to toggle a task's completion status
 void toggle_task_status(ToDoList *list, int id) {
     for(int i = 0; i < list->task_count; i++) {
         if(list->tasks[i].id == id) {
@@ -116,42 +108,71 @@ void toggle_task_status(ToDoList *list, int id) {
     }
 }
 
-// Function to display all tasks
 void display_tasks(const ToDoList *list) {
-    printf("\n==================================\n");
-    printf("            Display Tasks");
-    printf("\n==================================\n");
+    printf("\n\n╔═════════════════════════════════════════════════════════╗\n");
+    printf("║                   📋 ALL TASKS DISPLAY 📋                ║\n");
+    printf("╚═════════════════════════════════════════════════════════╝\n");
 
-    for(int i = 0; i < list->task_count; i++) {
-        printf("The task ID is: %d\n", list->tasks[i].id);
-        printf("The task title is: %s\n", list->tasks[i].title);
-        if(list->tasks[i].priority == 0) {
-            printf("The task priority is LOW\n");
-        } else if(list->tasks[i].priority == 1) {
-            printf("The task priority is HIGH\n");
-        }
-        if(list->tasks[i].is_completed == 0) {
-            printf("The task is not compleated\n");
-        } else if(list->tasks[i].is_completed == 1) {
-            printf("The task is compleated\n");
-        }
+    if (list->task_count == 0) {
+        printf("⚠️  No tasks added yet!\n");
+        return;
+    }
+
+    for (int i = 0; i < list->task_count; ++i) {
+        printf("📋 Task #%d:\n", i + 1);
+        printf("   🆔 ID: %d\n", list->tasks[i].id);
+        printf("   ✏️  Title: %s\n", list->tasks[i].title);
+        printf("   🔼 Priority: %d\n", list->tasks[i].priority);
+        printf("   Status: %s\n", list->tasks[i].is_completed ? "✅ Completed" : "❌ Not Completed");
+        printf("────────────────────────────────────────\n");
     }
 }
 
-// Function to save tasks to a file
 void save_tasks_to_file(const ToDoList *list, const char *filename) {
-    // TODO: Implement function to save tasks to a file.
-    // - Open the file in write mode.
-    // - Write each task's details to the file.
-    // - Handle file errors gracefully.
+    printf("\n💾 Saving tasks to file...\n");
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("❌ Error opening file for writing.\n");
+        return;
+    }
+
+    for (int i = 0; i < list->task_count; ++i) {
+        fprintf(file, "%d %s %d %d\n", 
+            list->tasks[i].id, 
+            list->tasks[i].title, 
+            list->tasks[i].priority, 
+            list->tasks[i].is_completed);
+    }
+
+    fclose(file);
+    printf("✅ Tasks saved successfully!\n");
 }
 
 // Function to load tasks from a file
 void load_tasks_from_file(ToDoList *list, const char *filename) {
-    // TODO: Implement function to load tasks from a file.
-    // - Open the file in read mode.
-    // - Read task details and populate the list.
-    // - Handle file errors gracefully.
+    printf("\n📂 Loading tasks from file...\n");
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("❌ Error opening file for reading.\n");
+        return;
+    }
+
+    list->task_count = 0; // Reset task count before loading
+
+    while (fscanf(file, "%d %255s %d %d", 
+                  &list->tasks[list->task_count].id, 
+                  list->tasks[list->task_count].title, 
+                  &list->tasks[list->task_count].priority, 
+                  &list->tasks[list->task_count].is_completed) != EOF) {
+        list->task_count++;
+        if (list->task_count >= list->capacity) {
+            printf("⚠️ Task list full. Not all tasks loaded.\n");
+            break;
+        }
+    }
+
+    fclose(file);
+    printf("✅ Tasks loaded successfully!\n");
 }
 
 int main() {
@@ -160,11 +181,12 @@ int main() {
     int initial_capacity = 5; 
 
     printf("\n══════════════════════════════════════════════════════════\n");
-    printf("🗒️  TO-DO LIST MANAGER 🗒️\n");
+    printf("🏆 THE ULTIMATE TO-DO LIST MANAGER 🏆\n");
     printf("══════════════════════════════════════════════════════════\n");
 
     todoList = initialize_todo_list(initial_capacity);
     if (todoList == NULL) {
+        printf("❌ Failed to initialize ToDoList. Exiting.\n");
         return 1;
     }
 
@@ -174,7 +196,7 @@ int main() {
         printf("╠══════════════════════════════════════════════════════════╣\n");
         printf("║  1. ➕ Add Task                                          ║\n");
         printf("║  2. 🗑️  Remove Task                                      ║\n");
-        printf("║  3. ✅ Toggle Task Status                                ║\n");
+        printf("║  3. 🔄 Toggle Task Status                                ║\n");
         printf("║  4. 📋 Display All Tasks                                 ║\n");
         printf("║  5. 💾 Save Tasks to File                                ║\n");
         printf("║  6. 📂 Load Tasks from File                              ║\n");
@@ -186,30 +208,49 @@ int main() {
 
         switch (choice) {
             case 1:
-                // TODO: Call add_task function
+                add_task(todoList);
                 break;
             case 2:
-                // TODO: Call remove_task function
+                printf("╔══════════════════════════════════════════════════════════╗\n");
+                printf("║                    🗑️ REMOVE TASK 🗑️                     ║\n");
+                printf("╚══════════════════════════════════════════════════════════╝\n\n");
+                printf("🗑️ Enter task ID to remove: ");
+                int id_to_remove;
+                scanf("%d", &id_to_remove);
+                remove_task(todoList, id_to_remove);
+                printf("🗑️ Task removed successfully!\n");
                 break;
             case 3:
-                // TODO: Call toggle_task_status function
+                printf("╔══════════════════════════════════════════════════════════╗\n");
+                printf("║                    🔄 TOGGLE STATUS 🔄                   ║\n");
+                printf("╚══════════════════════════════════════════════════════════╝\n\n");
+                printf("🔄 Enter task ID to toggle status: ");
+                int id_to_toggle;
+                scanf("%d", &id_to_toggle);
+                toggle_task_status(todoList, id_to_toggle);
+                printf("🔄 Task status toggled!\n");
                 break;
             case 4:
-                // TODO: Call display_tasks function
+                display_tasks(todoList);
                 break;
             case 5:
-                // TODO: Call save_tasks_to_file function
+                save_tasks_to_file(todoList, "tasks.txt");
                 break;
             case 6:
-                // TODO: Call load_tasks_from_file function
+                load_tasks_from_file(todoList, "tasks.txt");
                 break;
             case 7:
-                printf("\n🚪 Exiting and cleaning up...\n");
+                printf("\n\n🚪 ═══════════════════════════════════════════════════════\n");
+                printf("   🧹 CLEANING UP AND EXITING... 🧹\n");
+                printf("   ═══════════════════════════════════════════════════════\n");
                 free(todoList->tasks);
                 free(todoList);
+                printf("👋 Goodbye! Thanks for using the Ultimate To-Do Manager!\n");
                 return 0;
             default:
-                printf("\n⚠️  Invalid choice! Please try again.\n");
+                printf("\n⚠️  ═══════════════════════════════════════════════════════\n");
+                printf("   ❌ INVALID CHOICE! PLEASE TRY AGAIN ❌\n");
+                printf("   ═══════════════════════════════════════════════════════\n");
         }
     }
 }
