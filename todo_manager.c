@@ -5,7 +5,7 @@
 typedef struct {
     int id;             // Unique identifier for the task
     char title[256];    // Title of the task
-    int priority;       // Priority of the task
+    int priority;       // Priority of the task (0 = LOW) (1 = HIGH)
     int is_completed;   // Status of the task (0 = not completed, 1 = completed)
 } Task;
 
@@ -72,12 +72,12 @@ int add_task(ToDoList *list) {
     strcpy(list->tasks[list->task_count].title, title_temp);
 
     int priority_temp = 0;
-    printf("Enter the task's priority: ");
+    printf("Enter the task's priority (0 = LOW / 1 = HIGH): ");
     scanf("%d", &priority_temp);
     list->tasks[list->task_count].priority = priority_temp;
 
     int status_temp = 0;
-    printf("Enter the task's status: ");
+    printf("Enter the task's status (0 = not compl / 1 = compleated): ");
     scanf("%d", &status_temp);
     list->tasks[list->task_count].is_completed = status_temp;
 
@@ -118,9 +118,24 @@ void toggle_task_status(ToDoList *list, int id) {
 
 // Function to display all tasks
 void display_tasks(const ToDoList *list) {
-    // TODO: Implement function to display all tasks.
-    // - Iterate through the tasks array.
-    // - Print the details of each task, including status and priority.
+    printf("\n==================================\n");
+    printf("            Display Tasks");
+    printf("\n==================================\n");
+
+    for(int i = 0; i < list->task_count; i++) {
+        printf("The task ID is: %d\n", list->tasks[i].id);
+        printf("The task title is: %s\n", list->tasks[i].title);
+        if(list->tasks[i].priority == 0) {
+            printf("The task priority is LOW\n");
+        } else if(list->tasks[i].priority == 1) {
+            printf("The task priority is HIGH\n");
+        }
+        if(list->tasks[i].is_completed == 0) {
+            printf("The task is not compleated\n");
+        } else if(list->tasks[i].is_completed == 1) {
+            printf("The task is compleated\n");
+        }
+    }
 }
 
 // Function to save tasks to a file
