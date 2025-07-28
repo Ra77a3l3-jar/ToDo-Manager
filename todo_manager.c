@@ -46,7 +46,7 @@ ToDoList* initialize_todo_list(int initial_capacity) {
 
 void add_task(ToDoList *list) {
     printf("\n\n╔══════════════════════════════════════════════════════════╗\n");
-    printf("║                    ➕ ADD TASK ➕                          ║\n");
+    printf("║                    ➕ ADD TASK ➕                        ║\n");
     printf("╚══════════════════════════════════════════════════════════╝\n\n");
 
     if (list->task_count >= list->capacity) {
@@ -98,10 +98,11 @@ void remove_task(ToDoList *list, int id) {
 void toggle_task_status(ToDoList *list, int id) {
     for(int i = 0; i < list->task_count; i++) {
         if(list->tasks[i].id == id) {
-            list->tasks[i].id = id;
-            if(id == 1) {
+            if(list->tasks[i].is_completed == 0) {
+                list->tasks[i].is_completed = 1;
                 printf("The task is compleated\n");
-            } else if (id == 0) {
+            } else if (list->tasks[i].is_completed == 1) {
+                list->tasks[i].is_completed = 0;
                 printf("The task is not compleate\n");
             }
         }
@@ -110,7 +111,7 @@ void toggle_task_status(ToDoList *list, int id) {
 
 void display_tasks(const ToDoList *list) {
     printf("\n\n╔═════════════════════════════════════════════════════════╗\n");
-    printf("║                   📋 ALL TASKS DISPLAY 📋                ║\n");
+    printf("║                   📋 ALL TASKS DISPLAY 📋               ║\n");
     printf("╚═════════════════════════════════════════════════════════╝\n");
 
     if (list->task_count == 0) {
